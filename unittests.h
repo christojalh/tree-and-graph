@@ -15,6 +15,7 @@ class TreeTests
 	private:
 	  static bool insertMany();
 	  static bool deleteMany();
+	  static bool singleElementTest();
 	  std::map<std::string, bool> m_results;
 };
 

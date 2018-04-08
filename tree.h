@@ -30,8 +30,8 @@ private:
 public: 
 	MySearchTree(T value);
 	~MySearchTree();
-	void insert(T value);
-	void remove(T value);
+	bool insert(T value);
+	bool remove(T value);
 	bool contains(T value);
 
 	MySearchTree::Node* getRoot();

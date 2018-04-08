@@ -12,6 +12,7 @@
  *
  * Functionality:
  * -insert()
+ *     NOTE: duplicate values are ignored and not inserted
  * -contains()
  * -remove()
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -41,7 +42,7 @@ typename MySearchTree<T>::Node* MySearchTree<T>::getRoot()
 //			as long as the first one is in place, we know that the tree contains it. However, if we want to sort
 //			the tree, this might become a problem.........
 template<typename T>
-void MySearchTree<T>::insert(T value) 
+bool MySearchTree<T>::insert(T value) 
 {
 	Node* current = root.get();
 
@@ -50,38 +51,10 @@ void MySearchTree<T>::insert(T value)
 	{
 		if (value == current->getVal())
 		{
-			// if the value matches the current node, we'll randomly assign it L/R to keep the tree
-			//   balanced 
-			if (rand() % 2 == 0)
-			{
-				if (current->hasL()) 
-				{
-					// a child is found, so we travel to it to check if it can hold a new node
-					current = current->getL().get();
-				}
-				else
-				{
-					// a spot is found for the node, so we initialize it and break out of the loop
-					current->getL() = std::make_unique<Node>(value);
-					break;
-				}
-			}
-			else
-			{
-				if (current->hasR()) 
-				{
-					// a child is found, so we travel to it to check if it can hold a new node
-					current = current->getR().get();
-				}
-				else
-				{
-					current->getR() = std::make_unique<Node>(value);
-					break;	
-				}			
-			}
+			return false;
 		}
 
-		if (value > current->getVal())
+		else if (value > current->getVal())
 		{
 
 			if (current->hasR()) 
@@ -93,7 +66,7 @@ void MySearchTree<T>::insert(T value)
 			{
 				// a spot is found for the node, so we initialize it and break out of the loop
 				current->getR() = std::make_unique<Node>(value);
-				break;
+				return true;
 			}
 		}
 
@@ -108,7 +81,7 @@ void MySearchTree<T>::insert(T value)
 			{
 				// a spot is found for the node, so we initialize it and break out of the loop
 				current->getL() = std::make_unique<Node>(value);
-				break;
+				return true;
 			}
 		}	
 	}
@@ -165,12 +138,12 @@ bool MySearchTree<T>::contains(T value)
 //				do the same but with the smallest of the subtree. This is because the only values that retain ordering if they're
 //				swapped with the root are the largest of the left subtree or the smallest of the right subtree.
 template<typename T>
-void MySearchTree<T>::remove(T value) 
+bool MySearchTree<T>::remove(T value) 
 {
-	// we'll do nothing if the value is not in our tree
+
 	if (!contains(value))
 	{
-		return;
+		return false;
 	}
 
 	std::unique_ptr<MySearchTree<T>::Node>* toRemove = find(value);
@@ -179,6 +152,7 @@ void MySearchTree<T>::remove(T value)
 	if ( !hasChildren(toRemove) )
 	{
 		toRemove->reset();
+		return true;
 	}
 	// to keep the tree balanced, we'll choose a random subtree and replace the node to be removed with
 	//	 the optimal value from it
@@ -213,6 +187,7 @@ void MySearchTree<T>::remove(T value)
 			}
 			// since current is now a node without children, we can safely remove it
 			toRemove->reset();
+			return true;
 		}
 		else // go right and swap with the smallest value
 		{
@@ -243,6 +218,7 @@ void MySearchTree<T>::remove(T value)
 			}
 			// since current is now a node without children, we can safely remove it
 			toRemove->reset();
+			return true;
 		}
 	}
 	// if we don't have a left subtree, we'll go right
@@ -275,6 +251,7 @@ void MySearchTree<T>::remove(T value)
 		}
 		// since current is now a node without children, we can safely remove it
 		toRemove->reset();	
+		return true;
 	}
 	// otherwise go left
 	else 
@@ -303,6 +280,7 @@ void MySearchTree<T>::remove(T value)
 		}
 		// since current is now a node without children, we can safely remove it
 		toRemove->reset();	
+		return true;
 	}
 }
 

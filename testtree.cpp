@@ -9,6 +9,7 @@ void TreeTests::Run()
 {		  
     m_results["insertMany"] = insertMany();
     m_results["deleteMany"] = deleteMany();
+    m_results["singleElementTest"] = singleElementTest();
     
     for (auto& it : m_results)
     {
@@ -32,13 +33,13 @@ bool TreeTests::insertMany()
 	MySearchTree<int> tree(root);
 	for (int ii = 0; ii < 10000; ++ii)
 	{
-		if (vec[ii] == root) 
+		if (tree.insert(vec[ii])) 
 		{
-			continue;
+			// successful insert
 		}
 		else
 		{
-			tree.insert(vec[ii]);
+			// ignore duplicate 
 		}
 	}
 
@@ -85,14 +86,13 @@ bool TreeTests::deleteMany()
 
 	for (int ii = 0; ii < vec.size(); ++ii)
 	{
-		if (vec[ii] == root) 
+		if (tree.insert(vec[ii])) 
 		{
-			continue;
+			// successful insert
 		}
 		else
 		{
-			tree.insert(vec[ii]);
-			// std::cout << vec[ii] << " ";
+			// ignore duplicate 
 		}
 	}
 
@@ -103,9 +103,13 @@ bool TreeTests::deleteMany()
 		{
 			continue;
 		}
+		else if (tree.remove(vec[ii]))
+		{
+
+		}
 		else
 		{
-			tree.remove(vec[ii]);
+			return false; // signifies we have somehow removed something twice
 		}
 	}
 
@@ -117,6 +121,56 @@ bool TreeTests::deleteMany()
 	return false;
 }
 
+// verifies basic insert(), contain(), remove() functionality
+bool TreeTests::singleElementTest() 
+{
+	int root = 2; 
+	MySearchTree<int> tree(root); 
+
+	if ( !( tree.getRoot()->getVal() == root ) )
+	{
+		return false;
+	} 
+
+	if ( !tree.contains(root) )
+	{
+		return false;
+	}
+
+	if ( !( tree.insert(5) ) )
+	{
+		return false;
+	}
+
+	// inserting duplicate here
+	if ( tree.insert(5) ) 
+	{
+		return false;
+	}
+
+	if ( !tree.contains(5) )
+	{
+		return false;
+	}
+
+	if ( !tree.remove(5) )
+	{
+		return false;
+	}
+
+	if ( tree.contains(5) )
+	{
+		return false; 
+	}
+
+	// remove a nonexistent value
+	if ( tree.remove(5) ) 
+	{
+		return false;
+	}
+
+	return true;
+}
 
 // void verifyChildChecking() 
 // {
