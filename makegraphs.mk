@@ -1,2 +1,2 @@
-graphs: main.cpp treeandmap.cpp testtree.cpp
-	g++ -std=c++14 -o graphs main.cpp treeandmap.cpp testtree.cpp -I.
+graphs: main.cpp tree.cpp testtree.cpp
+	g++ -std=c++14 -o graphs main.cpp tree.cpp testtree.cpp -I.

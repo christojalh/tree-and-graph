@@ -1,32 +1,22 @@
 #include <cstdlib>
-#include "treeandmap.h"
+#include "tree.h"
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 
-// template<typename T> 
-// using Node_t = typename MySearchTree<T>::Node;
-/*  TODO
-write insert()
-write contains() to search through the tree
-test contains() after you insert a node
-write remove()
-test contains() after you remove a node
-
-    7
-  7  11
-
-
-*/
+/* Christopher Lee	   
+ * April 8th, 2018
+ * 
+ * This program is an implementation of a binary search tree. To create a tree using this program,
+ * pass in the initial value you want as the root, then insert() the rest.
+ *
+ * Functionality:
+ * -insert()
+ * -contains()
+ * -remove()
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-
-// if you want to call a constructor for the initialization of member variables
-// you have to do it in a member-initialization list
-
-// you have to dynamically allocate the variable the smart pointer is 
-// managing because the smart pointer calls a delete when it goes out 
-// of scope 
 template<typename T>
 MySearchTree<T>::MySearchTree(T value): root(new Node(value))
 {
@@ -36,9 +26,7 @@ MySearchTree<T>::MySearchTree(T value): root(new Node(value))
 template<typename T>
 MySearchTree<T>::~MySearchTree() 
 {
-	// remove() all nodes. it will have at most H deletes on the stack 
-	// where H is the height of the tree 
-	// remove(root); 
+	// all allocated variables will be deleted by their respective unique_ptr when the search tree goes out of scope
 }
 
 template<typename T>
@@ -194,60 +182,137 @@ void MySearchTree<T>::remove(T value)
 	}
 	// to keep the tree balanced, we'll choose a random subtree and replace the node to be removed with
 	//	 the optimal value from it
-	else if ( (toRemove->get()->hasL()) && (toRemove->get()->hasR()) )
+	else if ( ((*toRemove)->hasL()) && ((*toRemove)->hasR()) )
 	{
 		if (rand() % 2 == 0) // go left and swap with the largest value
 		{
-			swap( *toRemove, *largest(&toRemove->get()->getL()) );
+			// first check if this node has both children. if it doesn't, the smallest/largest code may not work 
+			//    correctly. If you want the smallest of the right tree and move right before calling smallest()
+			//    you're finding the smallest node of the right child, not the smallest of the node to be removed
+			if ( !(*toRemove)->getL()->hasR() )
+			{
+				// manually swap
+				auto toSwap = &(*toRemove)->getL();
+				swap( *toRemove, *toSwap);
+				toRemove = toSwap;
+			}
+			else // the code will work normally in this case
+			{
+				auto toSwap = largest(&(*toRemove)->getL());
+				swap( *toRemove, *toSwap );
+				toRemove = toSwap;				
+			}
+
+			// if toRemove still has children, we can't remove it, so we continue swapping it out until it meets
+			//   this criterion 
 			while (hasChildren(toRemove))
 			{
-				swap(*toRemove, *largest(toRemove));
+				auto toSwap = largest(toRemove);
+				swap(*toRemove, *toSwap);
+				toRemove = toSwap;
 			}
 			// since current is now a node without children, we can safely remove it
 			toRemove->reset();
 		}
 		else // go right and swap with the smallest value
 		{
-			swap( *toRemove, *smallest(&toRemove->get()->getR()) );
+			// first check if this node has both children. if it doesn't, the smallest/largest code may not work 
+			//    correctly. If you want the smallest of the right tree and move right before calling smallest()
+			//    you're finding the smallest node of the right child, not the smallest of the node to be removed
+			if ( !(*toRemove)->getR()->hasL() )
+			{
+				// manually swap
+				auto toSwap = &(*toRemove)->getR();
+				swap( *toRemove, *toSwap);
+				toRemove = toSwap;
+			}
+			else // the code will work normally in this case
+			{
+				auto toSwap = smallest(&(*toRemove)->getR());
+				swap( *toRemove, *toSwap );
+				toRemove = toSwap;				
+			}
+
+			// if toRemove still has children, we can't remove it, so we continue swapping it out until it meets
+			//   this criterion 
 			while (hasChildren(toRemove))
 			{
-				swap(*toRemove, *smallest(toRemove));
+				auto toSwap = smallest(toRemove);
+				swap(*toRemove, *toSwap);
+				toRemove = toSwap;
 			}
 			// since current is now a node without children, we can safely remove it
 			toRemove->reset();
 		}
 	}
 	// if we don't have a left subtree, we'll go right
-	else if (!toRemove->get()->hasL())
+	else if (!(*toRemove)->hasL())
 	{
-		swap( *toRemove, *smallest(&toRemove->get()->getR()) );
+		// first check if this node has both children. if it doesn't, the smallest/largest code may not work 
+		//    correctly. If you want the smallest of the right tree and move right before calling smallest()
+		//    you're finding the smallest node of the right child, not the smallest of the node to be removed
+		if ( !(*toRemove)->getR()->hasL() )
+		{
+			// manually swap
+			auto toSwap = &(*toRemove)->getR();
+			swap( *toRemove, *toSwap);
+			toRemove = toSwap;
+		}
+		else // the code will work normally in this case
+		{
+			auto toSwap = smallest(&(*toRemove)->getR());
+			swap( *toRemove, *toSwap );
+			toRemove = toSwap;				
+		}
+
+		// if toRemove still has children, we can't remove it, so we continue swapping it out until it meets
+		//   this criterion 
 		while (hasChildren(toRemove))
 		{
-			swap(*toRemove, *smallest(toRemove));
+			auto toSwap = smallest(toRemove);
+			swap(*toRemove, *toSwap);
+			toRemove = toSwap;
 		}
 		// since current is now a node without children, we can safely remove it
-		toRemove->reset();		
+		toRemove->reset();	
 	}
 	// otherwise go left
 	else 
 	{
-		swap( *toRemove, *largest(&toRemove->get()->getL()) );
+		if ( !(*toRemove)->getL()->hasR() )
+		{
+			// manually swap
+			auto toSwap = &(*toRemove)->getL();
+			swap( *toRemove, *toSwap);
+			toRemove = toSwap;
+		}
+		else // the code will work normally in this case
+		{
+			auto toSwap = largest(&(*toRemove)->getL());
+			swap( *toRemove, *toSwap );
+			toRemove = toSwap;				
+		}
+
+		// if toRemove still has children, we can't remove it, so we continue swapping it out until it meets
+		//   this criterion 
 		while (hasChildren(toRemove))
 		{
-			swap(*toRemove, *largest(toRemove));
+			auto toSwap = largest(toRemove);
+			swap(*toRemove, *toSwap);
+			toRemove = toSwap;
 		}
 		// since current is now a node without children, we can safely remove it
-		toRemove->reset();		
+		toRemove->reset();	
 	}
 }
 
-// for some reason i can enter an arg without "typename" but not the return value. why?
 template<typename T>
 void MySearchTree<T>::swap(std::unique_ptr<Node>& a, std::unique_ptr<Node>& b) 	
 {
-	std::unique_ptr<Node> temp = std::move(a);
-	a = std::move(b);
-	b = std::move(temp);
+	// std::cout << "\nSwapping vals " << a->getVal() << " " << b->getVal() << "\n";
+	T temp = a->getVal();
+	a->setVal(b->getVal());
+	b->setVal(temp);
 }
 
 // strategy: if it has a right child, keep going right until you hit an empty node. If it only has a left child,
@@ -306,7 +371,7 @@ std::unique_ptr<typename MySearchTree<T>::Node>* MySearchTree<T>::smallest(std::
 	}
 	else
 	{
-		current = &current->get()->getR(); // we are now at the right child of the arg
+		current = &(*current)->getR(); // we are now at the right child of the arg
 		if (current->get()->hasL())
 		{
 			while (current->get()->hasL())
@@ -325,17 +390,17 @@ std::unique_ptr<typename MySearchTree<T>::Node>* MySearchTree<T>::smallest(std::
 template<typename T>
 bool MySearchTree<T>::hasChildren(std::unique_ptr<Node>* current)
 {
-	if (current->get()->hasL())
+	if ((*current)->hasL())
 	{
-		return false;
+		return true;
 	}
-	else if (current->get()->hasR())
+	else if ((*current)->hasR())
 	{
-		return false;
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }
 
@@ -378,6 +443,12 @@ template<typename T>
 T MySearchTree<T>::Node::getVal() 
 {
 	return m_data;
+}
+
+template<typename T>
+void MySearchTree<T>::Node::setVal(T value) 
+{
+	m_data = value;
 }
 
 template<typename T>

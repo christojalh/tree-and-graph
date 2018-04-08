@@ -1,16 +1,21 @@
-#include "treeandmap.h"
+#include "tree.h"
+#include <map>
 
 #ifndef UNITTESTS
 #define UNITTESTS
 
-// Checks whether we can tell if a node has children
-void verifyChildChecking();
+// void verifyChildChecking();
+// void verifyInsertMultiple();
 
-// template <typename T>
-// void hasChildren(typename MySearchTree<T>::Node* parent);
+class TreeTests
+{
+	public:
+	  void Run();
 
-void verifyInsertMultiple();
-
-void verifyDeleteMultiple();
+	private:
+	  static bool insertMany();
+	  static bool deleteMany();
+	  std::map<std::string, bool> m_results;
+};
 
 #endif
