@@ -1,12 +1,12 @@
-#include "tree.h"
+#include "treeandmap.h"
 #include "unittests.h"
 #include <iostream> 
 #include <memory>
 
 int main() 
 {
-	TreeTests test;
-	test.Run();
+	// TreeTests treetest;
+	// treetest.Run();
 
 	return 0; 
 }

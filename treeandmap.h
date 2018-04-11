@@ -1,6 +1,35 @@
 #include <memory>
-#ifndef TREE
-#define TREE
+#include <vector>
+#include <map>
+#include <set>
+#ifndef TREEANDMAP
+#define TREEANDMAP
+
+template<typename T>
+class MyMap
+{
+public:
+	// if you imagine each of these nodes is a unique number, you'll call on the number
+
+    void connect(T objA, T objB);
+    // std::queue
+
+    // returns -1 if one of the nodes doesn't exist, or no connection is found 
+    int shortestDistance(T objA, T objB);
+
+private:
+    struct Node
+    {
+    	Node(const T data, T neighbor, MyMap<T>* map);
+    	const T m_data;
+        std::set<T> m_neighbors;
+        MyMap<T>* m_map;
+    };
+
+    void search(int current, )
+    std::map<int,std::shared_ptr<Node>> m_nodes;
+
+};
 
 template<typename T>
 class MySearchTree 
