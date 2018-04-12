@@ -20,14 +20,15 @@ public:
 private:
     struct Node
     {
-    	Node(const T data, T neighbor, MyMap<T>* map);
-    	const T m_data;
+    	Node(T data, T neighbor, MyMap<T>* map);
+    	T m_data;
         std::set<T> m_neighbors;
         MyMap<T>* m_map;
     };
 
-    void search(int current, )
+    // void search(int current, );
     std::map<int,std::shared_ptr<Node>> m_nodes;
+    bool isNeighbor(T objA, T objB);
 
 };
 

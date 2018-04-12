@@ -1,6 +1,7 @@
 #include "treeandmap.h"
 #include <memory>
 #include <queue>
+#include <iostream>
 
 template<typename T> 
 void MyMap<T>::connect(T objA, T objB)
@@ -12,6 +13,7 @@ void MyMap<T>::connect(T objA, T objB)
 	}
 	else
 	{
+		// if (m_nodes[objA]->m_neighbors.find(objB) == m_nodes[objA]->m_neighbors.end())
 		if (m_nodes[objA]->m_neighbors.find(objB) == m_nodes[objA]->m_neighbors.end())
 		{
 			// if it's already in our neighbor list, we'll ignore it
@@ -37,28 +39,37 @@ void MyMap<T>::connect(T objA, T objB)
 			m_nodes[objB]->m_neighbors.insert(objA);
 		}
 	}
+	// std::cout << "value: " << m_nodes[objA]->m_data << "neighbor: " << *m_nodes[objA]->m_neighbors.find(objB) << "\n";
+	// std::cout << 3 << " is neighbor of " << objA << "? " << isNeighbor(objA,3) << "\n";
 
 }
 
 template<typename T> 
 int MyMap<T>::shortestDistance(T objA, T objB)
 {
-	// if the objects don't exist, return -1
-	if (objA == objB) 
-	{
-		return 0;
-	}
-	// first add objA to our path
-	// to copy our path later, use std::queue<int> pathcpy (path); aka the copy constructor
-	std::queue<int> path; 
-	path.push(objA);
+	// // if the objects don't exist, return -1
+	// if (objA == objB) 
+	// {
+	// 	return 0;
+	// }
+	// // first add objA to our path
+	// // to copy our path later, use std::queue<int> pathcpy (path); aka the copy constructor
+	// std::queue<int> path; 
+	// path.push(objA);
 
-	for (int neighbor : m_nodes[objA]->m_neighbors)
-	{
-		
-	}
+	// for (int neighbor : m_nodes[objA]->m_neighbors)
+	// {
+
+	// }
 
 }
+
+template<typename T> 
+bool MyMap<T>::isNeighbor(T current, T neighbor)
+{
+	return m_nodes[current]->m_neighbors.find(neighbor) != m_nodes[current]->m_neighbors.end();
+}
+
 
 template<typename T>
 MyMap<T>::Node::Node(T data, T neighbor, MyMap<T>* map)
@@ -67,3 +78,7 @@ MyMap<T>::Node::Node(T data, T neighbor, MyMap<T>* map)
 	m_map = map; 
 	m_neighbors.insert(neighbor);
 }
+
+// Template Declarations
+#define DECLARE(type) template class MyMap<type>;
+DECLARE(int);
