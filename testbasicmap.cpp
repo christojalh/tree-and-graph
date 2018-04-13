@@ -1,5 +1,19 @@
 #include "treeandmap.h"
 #include "unittests.h"
+#include <iostream>
+
+void BasicMapTests::Run()
+{		  
+    m_results["threeNodeTest"] = threeNodeTest();
+    m_results["twoUnlinkedGroupsTest"] = twoUnlinkedGroupsTest();
+    m_results["twoPathsTest"] = twoPathsTest();
+    m_results["intersectionTest"] = intersectionTest();
+
+    for (auto& it : m_results)
+    {
+      std::cout << it.first << ":\t" << (it.second ? "PASSED" : "\033[1;31mFAILED\033[0m") << std::endl;
+    }	  
+}
 
 bool BasicMapTests::threeNodeTest() 
 {
@@ -22,6 +36,15 @@ bool BasicMapTests::threeNodeTest()
 	{
 		return false;
 	}
+
+	if (map.shortestDistance(1, 2) == 1) 
+	{
+		// ok; continue testing
+	}
+	else
+	{
+		return false;
+	}	
 
 	map.connect(2, 3);
 	if (map.shortestDistance(1, 3) == 2) 
@@ -51,7 +74,7 @@ bool BasicMapTests::twoUnlinkedGroupsTest()
 	MyMap<int> map;
 	map.connect(1, 2);
 	map.connect(3, 4);
-	if (map.shortestDistance(1, 3) == -1) 
+	if (map.shortestDistance(1, 3) == -2) 
 	{
 		return true;
 	}

@@ -26,9 +26,14 @@ private:
         MyMap<T>* m_map;
     };
 
-    // void search(int current, );
     std::map<int,std::shared_ptr<Node>> m_nodes;
+    void addPrevious(T obj, std::map<T, int>& previous);
+    void delPrevious(T obj, std::map<T, int>& previous);
+    bool isPrevious(T obj, std::map<T, int>& previous);
     bool isNeighbor(T objA, T objB);
+    bool isExistingNode(T obj);
+    void findPath(T current, T dest, int& shortest, std::vector<T>& path, std::map<T, int>& previous);
+
 
 };
 

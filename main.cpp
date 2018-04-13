@@ -8,8 +8,8 @@ int main()
 	// TreeTests treetest;
 	// treetest.Run();
 
-	MyMap<int> map;
-	map.connect(1, 2);
+	BasicMapTests maptest;
+	maptest.Run();
 
 	return 0; 
 }
