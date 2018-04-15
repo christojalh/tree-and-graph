@@ -39,6 +39,18 @@ void MyMap<T>::connect(T objA, T objB)
 	}
 }
 
+template<typename T> 
+void MyMap<T>::remove(T obj)
+{
+	// remove all external references to this object 
+	for (T neighbor : m_nodes[obj]->m_neighbors)
+	{
+		m_nodes[neighbor]->m_neighbors.erase(obj);
+	}
+	// delete obj
+	m_nodes.erase(obj);
+}
+
 // returns -1 if objects don't exist and -2 if the objects are in separate groups. Otherwise returns shortest distance
 template<typename T> 
 int MyMap<T>::shortestDistance(T objA, T objB)
@@ -80,7 +92,7 @@ int MyMap<T>::shortestDistance(T objA, T objB)
 template<typename T> 
 void MyMap<T>::findPath(T current, T dest, int& shortest, std::vector<T>& path, std::map<T, int>& previous)
 {
-	// Base case 1: Current path is >= than the the shortest path we've found thus far
+	// Base case 1: Current path is >= the the shortest path we've found thus far
 	// Base case 2: No neighbors except for places we've already been. If we run into a node we've been to previously
 	// 				or any of its neighbors, the shorter path to that place is to go from the previous node. 
 	//				Therefore it's redundant to continue and we should return.

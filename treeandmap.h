@@ -6,16 +6,37 @@
 #define TREEANDMAP
 
 template<typename T>
+class MyDistMap
+{
+public:
+    void connect(T objA, T objB, int distance);
+    void remove(T obj);
+    int shortestDistance(T objA, T objB); // returns -1 if one of the nodes doesn't exist, or -2 if no connection is found 
+
+private:
+    struct Node
+    {
+    	Node(T data, T neighbor, MyDistMap<T>* map, int distance);
+    	T m_data;
+        std::map<T, int> m_neighbors;
+        MyDistMap<T>* m_map;
+    };
+
+    std::map<int,std::shared_ptr<Node>> m_nodes;
+    void addPrevious(T obj, int distance, std::map<T, int>& previous);
+    bool isPrevious(T obj, std::map<T, int>& previous);
+    bool isNeighbor(T objA, T objB);
+    bool isExistingNode(T obj);
+    void findPath(T current, T dest, int& shortest, int& path, std::map<T, int>& previous);
+};
+
+template<typename T>
 class MyMap
 {
 public:
-	// if you imagine each of these nodes is a unique number, you'll call on the number
-
     void connect(T objA, T objB);
-    // std::queue
-
-    // returns -1 if one of the nodes doesn't exist, or no connection is found 
-    int shortestDistance(T objA, T objB);
+    void remove(T obj);
+    int shortestDistance(T objA, T objB); // returns -1 if one of the nodes doesn't exist, or -2 if no connection is found 
 
 private:
     struct Node

@@ -5,11 +5,14 @@
 
 int main() 
 {
-	// TreeTests treetest;
-	// treetest.Run();
+	TreeTests treetest;
+	treetest.Run();
 
 	BasicMapTests maptest;
 	maptest.Run();
+
+	DistMapTests distmaptest;
+	distmaptest.Run();
 
 	return 0; 
 }

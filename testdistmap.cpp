@@ -2,7 +2,7 @@
 #include "unittests.h"
 #include <iostream>
 
-void BasicMapTests::Run()
+void DistMapTests::Run()
 {		  
     m_results["threeNodeTest:\t"] = threeNodeTest();
     m_results["twoUnlinkedGroupsTest:"] = twoUnlinkedGroupsTest();
@@ -10,7 +10,7 @@ void BasicMapTests::Run()
     m_results["intersectionTest:"] = intersectionTest();
     m_results["sequentialRemoval:"] = sequentialRemoval();
 
-    std::cout << "Running BasicMap tests...\n";
+    std::cout << "Running DistMap tests...\n";
     for (auto& it : m_results)
     {
       std::cout << it.first << "\t" << (it.second ? "PASSED" : "\033[1;31mFAILED\033[0m") << std::endl;
@@ -18,10 +18,10 @@ void BasicMapTests::Run()
     std::cout << "\n";
 }
 
-bool BasicMapTests::threeNodeTest() 
+bool DistMapTests::threeNodeTest() 
 {
-	MyMap<int> map;
-	map.connect(1, 2);
+	MyDistMap<int> map;
+	map.connect(1, 2, 10);
 	if (map.shortestDistance(1, 1) == 0) 
 	{
 		// ok; continue testing
@@ -40,7 +40,7 @@ bool BasicMapTests::threeNodeTest()
 		return false;
 	}
 
-	if (map.shortestDistance(1, 2) == 1) 
+	if (map.shortestDistance(1, 2) == 10) 
 	{
 		// ok; continue testing
 	}
@@ -49,25 +49,16 @@ bool BasicMapTests::threeNodeTest()
 		return false;
 	}	
 
-	map.connect(2, 3);
-	if (map.shortestDistance(1, 3) == 2) 
+	map.connect(2, 3, 10);
+	if (map.shortestDistance(1, 3) == 20) 
 	{
 		// ok; continue testing
 	}
 	else
 	{
+		// std::cout << map.shortestDistance(1, 3) << "\n";
 		return false;
 	}
-
-	map.connect(1, 3);
-	if (map.shortestDistance(1, 3) == 1) 
-	{
-		// ok; continue testing
-	}
-	else
-	{
-		return false;
-	}	
 
 	map.remove(3);
 	if (map.shortestDistance(1, 3) == -1) // since this node doesn't exist, it returns -1
@@ -82,11 +73,11 @@ bool BasicMapTests::threeNodeTest()
 	return true;
 }
 
-bool BasicMapTests::twoUnlinkedGroupsTest()
+bool DistMapTests::twoUnlinkedGroupsTest()
 {
-	MyMap<int> map;
-	map.connect(1, 2);
-	map.connect(3, 4);
+	MyDistMap<int> map;
+	map.connect(1, 2, 5);
+	map.connect(3, 4, 5);
 	if (map.shortestDistance(1, 3) == -2) 
 	{
 		return true;
@@ -98,16 +89,13 @@ bool BasicMapTests::twoUnlinkedGroupsTest()
 }
 
 // looks like a rectangle
-bool BasicMapTests::twoPathsTest()
+bool DistMapTests::twoPathsTest()
 {
-	MyMap<int> map;
-	map.connect(0, 1);
-	map.connect(1, 2);
-	map.connect(0, 11);
-	map.connect(11, 12);
-	map.connect(12, 2);
+	MyDistMap<int> map;
+	map.connect(0, 1, 10);
+	map.connect(1, 2, 10);
 
-	if (map.shortestDistance(0, 2) == 2)
+	if (map.shortestDistance(0, 2) == 20)
 	{
 		// ok; continue testing
 	}
@@ -116,8 +104,21 @@ bool BasicMapTests::twoPathsTest()
 		return false;
 	}
 
-	map.remove(1);
-	if (map.shortestDistance(0, 2) == 3)
+	map.connect(0, 11, 5);
+	map.connect(11, 12, 5);
+	map.connect(12, 2, 5);
+
+	if (map.shortestDistance(0, 2) == 15)
+	{
+		// ok; continue testing
+	}
+	else
+	{
+		return false;
+	}
+
+	map.remove(12);
+	if (map.shortestDistance(0, 2) == 20)
 	{
 		// ok; continue testing
 	}
@@ -129,19 +130,20 @@ bool BasicMapTests::twoPathsTest()
 	return true;
 }
 
-// this one looks like a square with an X in the middle with the destination sticking out of the corner
-bool BasicMapTests::intersectionTest()
+// two diamonds stacked on top of each other
+bool DistMapTests::intersectionTest()
 {
-	MyMap<int> map;
-	map.connect(0, 1);
-	map.connect(1, 12);
-	map.connect(12, 11);
-	map.connect(11, 0);
-	map.connect(0, 12);
-	map.connect(11, 1);
-	map.connect(12, 2);
+	MyDistMap<int> map;
+	map.connect(0, 11, 5);
+	map.connect(11, 2, 5);
+	map.connect(2, 3, 5);
+	map.connect(3, 4, 5);
+	map.connect(0, 1, 10);
+	map.connect(1, 2, 10);
+	map.connect(2, 13, 10);
+	map.connect(13, 4, 10);
 
-	if (map.shortestDistance(0, 2) == 2)
+	if (map.shortestDistance(0, 4) == 20)
 	{
 		return true;
 	}
@@ -151,22 +153,19 @@ bool BasicMapTests::intersectionTest()
 	}
 }
 
-bool BasicMapTests::sequentialRemoval()
+bool DistMapTests::sequentialRemoval()
 {
-	MyMap<int> map;
-	map.connect(0, 11);
-	map.connect(11, 100);
+	MyDistMap<int> map;
+	map.connect(0, 1, 1);
+	map.connect(1, 100, 10);
 
-	map.connect(0, 21);
-	map.connect(21, 22);
-	map.connect(22, 100);
+	map.connect(0, 21, 2);
+	map.connect(21, 100, 10);
 
-	map.connect(0, 31);
-	map.connect(31, 32);
-	map.connect(32, 33);
-	map.connect(33, 100);
+	map.connect(0, 31, 3);
+	map.connect(31, 100, 10);
 
-	if (map.shortestDistance(0, 100) == 2)
+	if (map.shortestDistance(0, 100) == 11)
 	{
 		// ok; continue testing
 	}
@@ -175,8 +174,8 @@ bool BasicMapTests::sequentialRemoval()
 		return false;
 	}
 
-	map.remove(11);
-	if (map.shortestDistance(0, 100) == 3)
+	map.remove(1);
+	if (map.shortestDistance(0, 100) == 12)
 	{
 		// ok; continue testing
 	}
@@ -186,7 +185,7 @@ bool BasicMapTests::sequentialRemoval()
 	}
 
 	map.remove(21);
-	if (map.shortestDistance(0, 100) == 4)
+	if (map.shortestDistance(0, 100) == 13)
 	{
 		// ok; continue testing
 	}

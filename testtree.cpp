@@ -7,14 +7,16 @@
 
 void TreeTests::Run()
 {		  
-    m_results["insertMany"] = insertMany();
-    m_results["deleteMany"] = deleteMany();
-    m_results["singleElementTest"] = singleElementTest();
+    m_results["insertMany:\t"] = insertMany();
+    m_results["deleteMany:\t"] = deleteMany();
+    m_results["singleElementTest:"] = singleElementTest();
     
+    std::cout << "Running tree tests...\n";
     for (auto& it : m_results)
     {
-      std::cout << it.first << ":\t" << (it.second ? "PASSED" : "\033[1;31mFAILED\033[0m") << std::endl;
+      std::cout << it.first << "\t" << (it.second ? "PASSED" : "\033[1;31mFAILED\033[0m") << std::endl;
     }	  
+    std::cout << "\n";
 }
 
 // inserts 10k shuffled integers, checks if it contains() all of them
