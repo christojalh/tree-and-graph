@@ -5,18 +5,22 @@
 #include <vector>
 #include <ctime>
 
-void TreeTests::Run()
-{		  
-    m_results["insertMany:\t"] = insertMany();
-    m_results["deleteMany:\t"] = deleteMany();
-    m_results["singleElementTest:"] = singleElementTest();
-    
-    std::cout << "Running tree tests...\n";
-    for (auto& it : m_results)
-    {
-      std::cout << it.first << "\t" << (it.second ? "PASSED" : "\033[1;31mFAILED\033[0m") << std::endl;
-    }	  
-    std::cout << "\n";
+// Test_Registrar<TreeTests> TreeTests::registrar;
+
+int cmp(int val1, int val2) 
+{
+	if (val1 < val2) 
+	{
+		return -1;
+	}
+	else if (val1 > val2) 
+	{
+		return 1;
+	}
+	else 
+	{
+		return 0;
+	}
 }
 
 // inserts 10k shuffled integers, checks if it contains() all of them
@@ -32,7 +36,11 @@ bool TreeTests::insertMany()
 	std::random_shuffle(vec.begin(), vec.end());
 
 	int root = rand() % 10000;
-	MySearchTree<int> tree(root);
+	MySearchTree<int> tree(cmp);
+	if (tree.insert(root))
+	{
+		// continue
+	}
 	for (int ii = 0; ii < 10000; ++ii)
 	{
 		if (tree.insert(vec[ii])) 
@@ -81,7 +89,11 @@ bool TreeTests::deleteMany()
 		final = rand() % numInts;
 	}
 
-	MySearchTree<int> tree(root);
+	MySearchTree<int> tree(cmp);
+	if (tree.insert(root))
+	{
+		// continue
+	}
 	// std::cout << "Final: " << final << "\n";
 	// std::cout << "Root: " << tree.getRoot()->getVal() << "\n";
 	// std::cout << "Insertion sequence: ";
@@ -127,8 +139,11 @@ bool TreeTests::deleteMany()
 bool TreeTests::singleElementTest() 
 {
 	int root = 2; 
-	MySearchTree<int> tree(root); 
-
+	MySearchTree<int> tree(cmp); 
+	if (tree.insert(root))
+	{
+		// continue
+	}
 	if ( !( tree.getRoot()->getVal() == root ) )
 	{
 		return false;
