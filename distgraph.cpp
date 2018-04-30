@@ -1,10 +1,10 @@
-#include "treeandmap.h"
+#include "treeandgraph.h"
 #include <memory>
 #include <queue>
 #include <iostream>
 
 template<typename T> 
-void MyDistMap<T>::connect(T objA, T objB, int distance)
+void MyDistGraph<T>::connect(T objA, T objB, int distance)
 {
     if (!isExistingNode(objA)) 
     {
@@ -40,7 +40,7 @@ void MyDistMap<T>::connect(T objA, T objB, int distance)
 }
 
 template<typename T> 
-void MyDistMap<T>::remove(T obj)
+void MyDistGraph<T>::remove(T obj)
 {
     // remove all external references to this object 
     for (auto& neighbor : m_nodes[obj]->m_neighbors)
@@ -53,7 +53,7 @@ void MyDistMap<T>::remove(T obj)
 
 // returns -1 if objects don't exist and -2 if the objects are in separate groups. Otherwise returns shortest distance
 template<typename T> 
-int MyDistMap<T>::shortestDistance(T objA, T objB)
+int MyDistGraph<T>::shortestDistance(T objA, T objB)
 {
     if (!isExistingNode(objA) || !isExistingNode(objB))
     {
@@ -86,7 +86,7 @@ int MyDistMap<T>::shortestDistance(T objA, T objB)
 
 
 template<typename T> 
-void MyDistMap<T>::findPath(T current, T dest, int& shortest, int& path, std::map<T, int>& previous)
+void MyDistGraph<T>::findPath(T current, T dest, int& shortest, int& path, std::map<T, int>& previous)
 {
     // Base case 1: Current path is >= the the shortest path we've found thus far to this node or to the destination
     // Base case 2: No neighbors left to look through 
@@ -155,7 +155,7 @@ void MyDistMap<T>::findPath(T current, T dest, int& shortest, int& path, std::ma
 // If the obj isn't already in 'previous', it inserts it. If the obj is in previous, if the new distance
 // is shorter, the value is updated. Otherwise it is ignored. 
 template<typename T> 
-void MyDistMap<T>::addPrevious(T obj, int distance, std::map<T, int>& previous)
+void MyDistGraph<T>::addPrevious(T obj, int distance, std::map<T, int>& previous)
 {
     if (isPrevious(obj, previous))
     {
@@ -175,31 +175,31 @@ void MyDistMap<T>::addPrevious(T obj, int distance, std::map<T, int>& previous)
 }
 
 template<typename T> 
-bool MyDistMap<T>::isPrevious(T obj, std::map<T, int>& previous)
+bool MyDistGraph<T>::isPrevious(T obj, std::map<T, int>& previous)
 {
     return previous.find(obj) != previous.end();
 }
 
 template<typename T> 
-bool MyDistMap<T>::isNeighbor(T current, T neighbor)
+bool MyDistGraph<T>::isNeighbor(T current, T neighbor)
 {
     return m_nodes[current]->m_neighbors.find(neighbor) != m_nodes[current]->m_neighbors.end();
 }
 
 template<typename T> 
-bool MyDistMap<T>::isExistingNode(T obj)
+bool MyDistGraph<T>::isExistingNode(T obj)
 {
-    return m_nodes.find(obj) != m_nodes.end(); // if an object is not in a map, find() returns an it to the end
+    return m_nodes.find(obj) != m_nodes.end(); // if an object is not in a graph, find() returns an it to the end
 }
 
 template<typename T>
-MyDistMap<T>::Node::Node(T data, T neighbor, MyDistMap<T>* map, int distance)
+MyDistGraph<T>::Node::Node(T data, T neighbor, MyDistGraph<T>* graph, int distance)
 {
     m_data = data;
-    m_map = map; 
+    m_graph = graph; 
     m_neighbors[neighbor] = distance;
 }
 
 // Template Declarations
-#define DECLARE(type) template class MyDistMap<type>;
+#define DECLARE(type) template class MyDistGraph<type>;
 DECLARE(int);

@@ -1,7 +1,7 @@
 #ifndef UNITTESTS
 #define UNITTESTS
 
-#include "treeandmap.h"
+#include "treeandgraph.h"
 #include <map>
 #include <iostream>
 // #include <test_helpers.h>
@@ -48,7 +48,7 @@ class TreeTests
 	  std::map<std::string, bool> m_results;
 };
 
-class BasicMapTests
+class BasicGraphTests
 {
 public: 
 	void Run();
@@ -62,7 +62,7 @@ private:
 	std::map<std::string, bool> m_results;
 };
 
-class DistMapTests
+class DistGraphTests
 {
 public: 
 	void Run();

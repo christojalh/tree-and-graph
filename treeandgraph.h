@@ -7,11 +7,11 @@
 #include <stdexcept>
 #include <functional>
 
-#ifndef TREEANDMAP
-#define TREEANDMAP
+#ifndef TREEANDGRAPH
+#define TREEANDGRAPH
 
 template<typename T>
-class MyDistMap
+class MyDistGraph
 {
 public:
     void connect(T objA, T objB, int distance);
@@ -21,10 +21,10 @@ public:
 private:
     struct Node
     {
-    	Node(T data, T neighbor, MyDistMap<T>* map, int distance);
+    	Node(T data, T neighbor, MyDistGraph<T>* graph, int distance);
     	T m_data;
         std::map<T, int> m_neighbors;
-        MyDistMap<T>* m_map;
+        MyDistGraph<T>* m_graph;
     };
 
     std::map<int,std::shared_ptr<Node>> m_nodes;
@@ -509,7 +509,7 @@ private:
 };
 
 template<typename T>
-class MyMap
+class MyGraph
 {
 public:
     void connect(T objA, T objB);

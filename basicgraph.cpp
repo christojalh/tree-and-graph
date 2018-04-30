@@ -1,10 +1,10 @@
-#include "treeandmap.h"
+#include "treeandgraph.h"
 #include <memory>
 #include <queue>
 #include <iostream>
 
 template<typename T> 
-void MyMap<T>::connect(T objA, T objB)
+void MyGraph<T>::connect(T objA, T objB)
 {
 	// if the nodes don't exist yet we want to make them
 	if (!isExistingNode(objA)) 
@@ -37,7 +37,7 @@ void MyMap<T>::connect(T objA, T objB)
 }
 
 template<typename T> 
-void MyMap<T>::remove(T obj)
+void MyGraph<T>::remove(T obj)
 {
 	// remove all external references to this object 
 	for (auto& neighbor : get(obj)->m_neighbors)
@@ -64,7 +64,7 @@ void MyMap<T>::remove(T obj)
 
 // returns -1 if objects don't exist and -2 if the objects are in separate groups. Otherwise returns shortest distance
 template<typename T> 
-int MyMap<T>::shortestDistance(T objA, T objB)
+int MyGraph<T>::shortestDistance(T objA, T objB)
 {
 	if (!isExistingNode(objA) || !isExistingNode(objB))
 	{
@@ -84,7 +84,6 @@ int MyMap<T>::shortestDistance(T objA, T objB)
 		return shortest;
 	}
 	std::vector<PastNode> previous;
-	// std::map<T, int> previous; // keeps track of previous nodes and neighbors of nodes
 	addPrevious(objA, previous);
 	for (auto& neighbor : get(objA)->m_neighbors)
 	{
@@ -100,7 +99,7 @@ int MyMap<T>::shortestDistance(T objA, T objB)
 
 
 template<typename T> 
-void MyMap<T>::findPath(T current, T dest, int& shortest, int& path, std::vector<PastNode>& previous)
+void MyGraph<T>::findPath(T current, T dest, int& shortest, int& path, std::vector<PastNode>& previous)
 {
 	// Base case 1: Current path is >= the the shortest path we've found thus far
 	// Base case 2: No neighbors except for places we've already been. If we run into a node we've been to previously
@@ -136,7 +135,7 @@ void MyMap<T>::findPath(T current, T dest, int& shortest, int& path, std::vector
 			{
 				shortest = path;
 				break; // we can stop looking at this node and beyond it, since no neighbors will have a shorter distance to the dest
-				// NOTE: this is not the case in DistMap
+				// NOTE: this is not the case in Distgraph
 			}
 			else if (path < shortest)
 			{
@@ -161,7 +160,7 @@ void MyMap<T>::findPath(T current, T dest, int& shortest, int& path, std::vector
 
 // increment the number of times we've seen this object
 template<typename T> 
-void MyMap<T>::addPrevious(T obj, std::vector<PastNode>& previous)
+void MyGraph<T>::addPrevious(T obj, std::vector<PastNode>& previous)
 {
 	if (isPrevious(obj, previous))
 	{
@@ -177,7 +176,7 @@ void MyMap<T>::addPrevious(T obj, std::vector<PastNode>& previous)
 
 // decrement the number of times we've seen this object, or delete it from 'previous' if the number hits 0
 template<typename T> 
-void MyMap<T>::delPrevious(T obj, std::vector<PastNode>& previous)
+void MyGraph<T>::delPrevious(T obj, std::vector<PastNode>& previous)
 {
 	if (!isPrevious(obj, previous))
 	{
@@ -197,7 +196,7 @@ void MyMap<T>::delPrevious(T obj, std::vector<PastNode>& previous)
 }
 
 template<typename T> 
-bool MyMap<T>::isPrevious(T obj, std::vector<PastNode>& previous)
+bool MyGraph<T>::isPrevious(T obj, std::vector<PastNode>& previous)
 {
 	for (auto& node : previous)
 	{
@@ -210,7 +209,7 @@ bool MyMap<T>::isPrevious(T obj, std::vector<PastNode>& previous)
 }
 
 template<typename T> 
-auto MyMap<T>::getPreviousIt(T obj, std::vector<PastNode>& previous)
+auto MyGraph<T>::getPreviousIt(T obj, std::vector<PastNode>& previous)
 {
 	if (!isPrevious(obj, previous))
 	{
@@ -227,7 +226,7 @@ auto MyMap<T>::getPreviousIt(T obj, std::vector<PastNode>& previous)
 }
 
 template<typename T> 
-bool MyMap<T>::isNeighbor(T current, T neighbor)
+bool MyGraph<T>::isNeighbor(T current, T neighbor)
 {
 	for (auto& it : get(current)->m_neighbors)
 	{
@@ -240,7 +239,7 @@ bool MyMap<T>::isNeighbor(T current, T neighbor)
 }
 
 template<typename T> 
-bool MyMap<T>::isExistingNode(T obj)
+bool MyGraph<T>::isExistingNode(T obj)
 {
 	for (auto& it : m_nodes)
 	{
@@ -253,7 +252,7 @@ bool MyMap<T>::isExistingNode(T obj)
 }
 
 template<typename T> 
-std::shared_ptr<typename MyMap<T>::Node>& MyMap<T>::get(T obj)
+std::shared_ptr<typename MyGraph<T>::Node>& MyGraph<T>::get(T obj)
 {
 	for (auto& it : m_nodes)
 	{
@@ -268,18 +267,18 @@ std::shared_ptr<typename MyMap<T>::Node>& MyMap<T>::get(T obj)
 }
 
 template<typename T>
-MyMap<T>::Node::Node(T data)
+MyGraph<T>::Node::Node(T data)
 {
 	m_data = data;
 }
 
 template<typename T>
-MyMap<T>::PastNode::PastNode(T* data)
+MyGraph<T>::PastNode::PastNode(T* data)
 {
 	m_data = data;
 	++m_timesEncountered;
 }
 
 // Template Declarations
-#define DECLARE(type) template class MyMap<type>;
+#define DECLARE(type) template class MyGraph<type>;
 DECLARE(int);
